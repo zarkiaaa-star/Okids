@@ -1,1 +1,1234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okids – تطبيق الطلبات</title>
+<style>
+  /* ===== RESET & GLOBAL ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  :root {
+    --blue-dark:  #0D3B8C;
+    --blue-mid:   #1A5DC8;
+    --blue-light: #E8F0FE;
+    --red:        #E02020;
+    --white:      #FFFFFF;
+    --gray-bg:    #F4F6FB;
+    --gray-text:  #5A6272;
+    --card-shadow: 0 4px 18px rgba(13,59,140,0.10);
+    --radius:     18px;
+    --radius-sm:  10px;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: #E0E6F5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 10px;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* ===== PHONE FRAME ===== */
+  .phone {
+    width: 360px;
+    min-height: 780px;
+    background: var(--gray-bg);
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.22), inset 0 0 0 3px #C8D4EE;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 6px solid #1a1a2e;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: var(--blue-dark);
+    color: white;
+    font-size: 11px;
+    padding: 6px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+  }
+
+  /* Screen label */
+  .screen-label {
+    position: absolute;
+    top: -28px;
+    right: 0;
+    background: var(--blue-dark);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 8px 8px 0 0;
+    letter-spacing: 0.5px;
+  }
+
+  .phone-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* ===== SCREEN CONTENT ===== */
+  .screen {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--gray-bg);
+  }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* ===== TOP NAV ===== */
+  .top-nav {
+    background: var(--blue-dark);
+    padding: 14px 18px 18px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+  }
+  .logo-area { display: flex; flex-direction: column; }
+  .logo-brand {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .logo-brand span { color: #FF6B6B; }
+  .logo-sub {
+    font-size: 10px;
+    color: #A8C4F0;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+  .nav-icons { display: flex; gap: 10px; }
+  .nav-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    color: white;
+    position: relative;
+  }
+  .badge {
+    position: absolute;
+    top: -3px; right: -3px;
+    background: var(--red);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ===== SEARCH BAR ===== */
+  .search-bar {
+    background: var(--blue-dark);
+    padding: 0 18px 16px;
+  }
+  .search-input {
+    width: 100%;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 16px 10px 40px;
+    color: white;
+    font-size: 13px;
+    outline: none;
+  }
+  .search-input::placeholder { color: rgba(255,255,255,0.6); }
+  .search-wrap { position: relative; }
+  .search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    pointer-events: none;
+  }
+
+  /* ===== WELCOME BANNER ===== */
+  .welcome-banner {
+    margin: 14px 16px;
+    background: linear-gradient(135deg, var(--blue-mid) 0%, var(--blue-dark) 100%);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: -20px;
+    width: 100px; height: 100px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: 60px;
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .welcome-text h2 { font-size: 15px; font-weight: 700; }
+  .welcome-text p { font-size: 11px; color: #A8C4F0; margin-top: 4px; }
+  .welcome-emoji { font-size: 40px; }
+
+  /* ===== ORDER NOW BTN ===== */
+  .order-now-btn {
+    display: block;
+    margin: 0 16px 14px;
+    background: linear-gradient(135deg, var(--red), #C01010);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(224,32,32,0.35);
+    width: calc(100% - 32px);
+    transition: transform 0.15s;
+  }
+  .order-now-btn:active { transform: scale(0.97); }
+
+  /* ===== SECTION TITLE ===== */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 18px 10px;
+  }
+  .section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--blue-dark);
+  }
+  .section-link {
+    font-size: 12px;
+    color: var(--blue-mid);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* ===== CATEGORIES ===== */
+  .categories {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 14px;
+    overflow-x: auto;
+  }
+  .categories::-webkit-scrollbar { display: none; }
+  .cat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 70px;
+    cursor: pointer;
+  }
+  .cat-icon {
+    width: 54px; height: 54px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 3px 10px rgba(13,59,140,0.12);
+  }
+  .cat-icon.active { background: var(--blue-dark); }
+  .cat-icon.c1 { background: #E8F3FF; }
+  .cat-icon.c2 { background: #FFF3E8; }
+  .cat-icon.c3 { background: #F0FFE8; }
+  .cat-icon.c4 { background: #FFE8F0; }
+  .cat-icon.c5 { background: #F8E8FF; }
+  .cat-label { font-size: 11px; color: var(--gray-text); font-weight: 600; text-align: center; }
+
+  /* ===== FEATURED PRODUCTS (horizontal scroll) ===== */
+  .featured-scroll {
+    display: flex;
+    gap: 12px;
+    padding: 0 16px 16px;
+    overflow-x: auto;
+  }
+  .featured-scroll::-webkit-scrollbar { display: none; }
+
+  .feat-card {
+    min-width: 150px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .feat-card:hover { border-color: var(--blue-mid); }
+  .feat-badge {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--red);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+  .feat-img {
+    width: 80px; height: 80px;
+    object-fit: contain;
+    font-size: 50px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feat-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .feat-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--blue-mid);
+  }
+  .feat-unit { font-size: 10px; color: var(--gray-text); margin-top: -6px; }
+  .add-btn {
+    background: var(--blue-dark);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
+  }
+  .add-btn:hover { background: var(--blue-mid); }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav {
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.07);
+  }
+  .bn-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    color: var(--gray-text);
+    font-weight: 600;
+  }
+  .bn-item.active { color: var(--blue-dark); }
+  .bn-icon { font-size: 20px; }
+  .bn-dot {
+    width: 5px; height: 5px;
+    background: var(--blue-dark);
+    border-radius: 50%;
+  }
+
+  /* ===========================
+     SCREEN 2 – PRODUCTS
+  =========================== */
+  .page-header {
+    background: var(--blue-dark);
+    padding: 14px 18px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+  }
+  .back-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .page-title { font-size: 17px; font-weight: 800; }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    background: white;
+    border: 1.5px solid #D0DCF0;
+    color: var(--blue-dark);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .filter-chip.active {
+    background: var(--blue-dark);
+    color: white;
+    border-color: var(--blue-dark);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 4px 14px 16px;
+  }
+
+  .prod-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    border: 1.5px solid #EEF2FB;
+  }
+  .prod-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: #0D3B8C10;
+    color: var(--blue-dark);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    border: 1px solid #C8D8F5;
+  }
+  .prod-img {
+    width: 75px; height: 75px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    margin-top: 6px;
+  }
+  .prod-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .prod-weight { font-size: 10px; color: var(--gray-text); }
+  .prod-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 2px;
+  }
+  .prod-price {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--blue-mid);
+  }
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .qty-btn {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    border: none;
+    background: var(--blue-dark);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .qty-btn.minus { background: #EEF2FB; color: var(--blue-dark); }
+  .qty-num {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--blue-dark);
+    min-width: 18px;
+    text-align: center;
+  }
+
+  /* ===========================
+     SCREEN 3 – CART
+  =========================== */
+  .cart-list { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+
+  .cart-item {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 3px 12px rgba(13,59,140,0.07);
+  }
+  .cart-img {
+    width: 56px; height: 56px;
+    background: var(--blue-light);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+  .cart-info { flex: 1; }
+  .cart-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+  .cart-weight { font-size: 11px; color: var(--gray-text); margin-top: 2px; }
+  .cart-price { font-size: 14px; font-weight: 800; color: var(--blue-mid); margin-top: 4px; }
+  .cart-qty-ctrl {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .cart-qty-btn {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    border: 1.5px solid #D0DCF0;
+    background: white;
+    color: var(--blue-dark);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cart-qty-btn.plus { background: var(--blue-dark); color: white; border-color: var(--blue-dark); }
+  .cart-qty-num { font-size: 14px; font-weight: 800; color: var(--blue-dark); }
+
+  .delete-btn {
+    background: #FFF0F0;
+    border: 1px solid #FFD0D0;
+    color: var(--red);
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .cart-summary {
+    background: white;
+    margin: 0 14px;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    box-shadow: var(--card-shadow);
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 13px;
+    color: var(--gray-text);
+  }
+  .summary-row.total {
+    border-top: 1.5px solid #EEF2FB;
+    margin-top: 6px;
+    padding-top: 12px;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--blue-dark);
+  }
+  .summary-row.total span:last-child { color: var(--red); }
+
+  .send-order-btn {
+    display: block;
+    margin: 14px 14px 6px;
+    background: linear-gradient(135deg, var(--red), #C01010);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(224,32,32,0.35);
+    width: calc(100% - 28px);
+  }
+
+  /* ===========================
+     SCREEN 4 – CONFIRMATION
+  =========================== */
+  .confirm-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 24px;
+    text-align: center;
+    gap: 16px;
+    background: var(--gray-bg);
+  }
+  .confirm-circle {
+    width: 110px; height: 110px;
+    background: linear-gradient(135deg, #28C76F, #1DA85A);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px;
+    box-shadow: 0 10px 30px rgba(40,199,111,0.35);
+    animation: pop 0.4s ease;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .confirm-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--blue-dark);
+  }
+  .confirm-sub {
+    font-size: 13px;
+    color: var(--gray-text);
+    line-height: 1.6;
+    max-width: 260px;
+  }
+  .order-num-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px 28px;
+    box-shadow: var(--card-shadow);
+    border: 2px dashed #C8D8F5;
+  }
+  .order-num-label { font-size: 11px; color: var(--gray-text); }
+  .order-num { font-size: 22px; font-weight: 900; color: var(--blue-dark); letter-spacing: 2px; }
+
+  .confirm-details {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    width: 100%;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .detail-label { color: var(--gray-text); }
+  .detail-value { font-weight: 700; color: var(--blue-dark); }
+  .detail-value.green { color: #28C76F; }
+
+  .track-btn {
+    background: var(--blue-dark);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 6px 20px rgba(13,59,140,0.25);
+  }
+  .new-order-btn {
+    background: white;
+    color: var(--blue-dark);
+    border: 2px solid var(--blue-dark);
+    border-radius: 30px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  /* ===========================
+     RESPONSIVE TITLES
+  =========================== */
+  .screens-wrapper {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .screen-label-bottom {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    background: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Page indicator */
+  .page-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    padding: 8px;
+  }
+  .dot { width: 7px; height: 7px; background: #C8D8F5; border-radius: 50%; }
+  .dot.active { background: var(--blue-dark); width: 20px; border-radius: 4px; }
+
+  /* Promo banner */
+  .promo-banner {
+    margin: 0 16px 14px;
+    background: linear-gradient(120deg, #FF6B6B, var(--red));
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(224,32,32,0.25);
+  }
+  .promo-text em { font-style: normal; font-size: 16px; display: block; }
+  .promo-code {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px dashed rgba(255,255,255,0.6);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="screens-wrapper">
+
+  <!-- ============================
+       PHONE 1 — الصفحة الرئيسية
+  ============================= -->
+  <div>
+    <div class="phone-wrapper">
+      <div class="phone">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋 98%</span>
+        </div>
+
+        <!-- Top Nav -->
+        <div class="top-nav">
+          <div class="logo-area">
+            <div class="logo-brand">O<span>K</span>IDS</div>
+            <div class="logo-sub">Groupe Goumidi</div>
+          </div>
+          <div class="nav-icons">
+            <button class="nav-icon">🔔<span class="badge">2</span></button>
+            <button class="nav-icon">🛒<span class="badge">5</span></button>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input class="search-input" type="text" placeholder="ابحث عن منتج...">
+          </div>
+        </div>
+
+        <div class="screen">
+          <!-- Welcome Banner -->
+          <div class="welcome-banner">
+            <div class="welcome-text">
+              <h2>مرحباً، أحمد التاجر 👋</h2>
+              <p>اطلب منتجاتك المفضلة بسرعة</p>
+            </div>
+            <div class="welcome-emoji">🥛</div>
+          </div>
+
+          <!-- Promo Banner -->
+          <div class="promo-banner">
+            <div class="promo-text">
+              <em>عرض خاص للتجار!</em>
+              خصم 10% على الطلبات فوق 50 كرتون
+            </div>
+            <div class="promo-code">OKIDS10</div>
+          </div>
+
+          <!-- Order Now -->
+          <button class="order-now-btn">🛒 اطلب الآن</button>
+
+          <!-- Categories -->
+          <div class="section-header">
+            <span class="section-title">الفئات</span>
+            <span class="section-link">عرض الكل ›</span>
+          </div>
+          <div class="categories">
+            <div class="cat-item">
+              <div class="cat-icon active">🧀</div>
+              <span class="cat-label" style="color:#fff;background:var(--blue-dark);border-radius:8px;padding:2px 6px;">جبن</span>
+            </div>
+            <div class="cat-item">
+              <div class="cat-icon c1">🥛</div>
+              <span class="cat-label">حليب</span>
+            </div>
+            <div class="cat-item">
+              <div class="cat-icon c2">🧈</div>
+              <span class="cat-label">زبدة</span>
+            </div>
+            <div class="cat-item">
+              <div class="cat-icon c3">🍼</div>
+              <span class="cat-label">أطفال</span>
+            </div>
+            <div class="cat-item">
+              <div class="cat-icon c4">🥤</div>
+              <span class="cat-label">مشروبات</span>
+            </div>
+            <div class="cat-item">
+              <div class="cat-icon c5">🎁</div>
+              <span class="cat-label">عروض</span>
+            </div>
+          </div>
+
+          <!-- Featured Products -->
+          <div class="section-header">
+            <span class="section-title">⭐ منتجات مميزة</span>
+            <span class="section-link">عرض الكل ›</span>
+          </div>
+          <div class="featured-scroll">
+            <div class="feat-card">
+              <span class="feat-badge">الأكثر طلباً</span>
+              <div class="feat-img">🧀</div>
+              <div class="feat-name">جبن Okids بالحصص</div>
+              <div class="feat-price">320 دج</div>
+              <div class="feat-unit">/ الكرتون (24 قطعة)</div>
+              <button class="add-btn">+</button>
+            </div>
+            <div class="feat-card">
+              <span class="feat-badge" style="background:var(--blue-dark)">جديد</span>
+              <div class="feat-img">🧇</div>
+              <div class="feat-name">جبن Okids بالشريط</div>
+              <div class="feat-price">280 دج</div>
+              <div class="feat-unit">/ الكرتون</div>
+              <button class="add-btn">+</button>
+            </div>
+            <div class="feat-card">
+              <div class="feat-img">🥛</div>
+              <div class="feat-name">حليب أطفال بودرة</div>
+              <div class="feat-price">1850 دج</div>
+              <div class="feat-unit">/ كيس 25 كغ</div>
+              <button class="add-btn">+</button>
+            </div>
+            <div class="feat-card">
+              <span class="feat-badge" style="background:#28C76F">عرض</span>
+              <div class="feat-img">🍼</div>
+              <div class="feat-name">حليب UHT Okids</div>
+              <div class="feat-price">450 دج</div>
+              <div class="feat-unit">/ كرتون 12 لتر</div>
+              <button class="add-btn">+</button>
+            </div>
+          </div>
+
+          <!-- Page dots -->
+          <div class="page-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+
+          <div style="height:16px;"></div>
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+          <div class="bn-item active">
+            <span class="bn-icon">🏠</span>
+            <span>الرئيسية</span>
+            <div class="bn-dot"></div>
+          </div>
+          <div class="bn-item">
+            <span class="bn-icon">📦</span>
+            <span>المنتجات</span>
+          </div>
+          <div class="bn-item">
+            <span class="bn-icon">🛒</span>
+            <span>السلة</span>
+          </div>
+          <div class="bn-item">
+            <span class="bn-icon">📋</span>
+            <span>طلباتي</span>
+          </div>
+          <div class="bn-item">
+            <span class="bn-icon">👤</span>
+            <span>حسابي</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label-bottom">📱 الشاشة 1 — الرئيسية</div>
+  </div>
+
+  <!-- ============================
+       PHONE 2 — قائمة المنتجات
+  ============================= -->
+  <div>
+    <div class="phone-wrapper">
+      <div class="phone">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋 98%</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+          <button class="back-btn">‹</button>
+          <span class="page-title">📦 قائمة المنتجات</span>
+          <button class="nav-icon" style="margin-right:auto;">🔍</button>
+        </div>
+
+        <div class="screen">
+          <!-- Filter Chips -->
+          <div class="filter-bar">
+            <div class="filter-chip active">الكل</div>
+            <div class="filter-chip">🧀 جبن</div>
+            <div class="filter-chip">🥛 حليب</div>
+            <div class="filter-chip">🍼 أطفال</div>
+            <div class="filter-chip">🧈 زبدة</div>
+            <div class="filter-chip">🎁 عروض</div>
+          </div>
+
+          <!-- Products Grid -->
+          <div class="products-grid">
+
+            <div class="prod-card">
+              <span class="prod-badge">الأكثر طلباً</span>
+              <div class="prod-img">🧀</div>
+              <div class="prod-name">جبن Okids بالحصص</div>
+              <div class="prod-weight">24 قطعة × 8غ</div>
+              <div class="prod-price-row">
+                <div class="prod-price">320 دج</div>
+                <div class="qty-ctrl">
+                  <button class="qty-btn minus">−</button>
+                  <span class="qty-num">2</span>
+                  <button class="qty-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="prod-card">
+              <span class="prod-badge" style="background:#0D3B8C15;color:#1A5DC8;border-color:#A8C4F0;">جديد</span>
+              <div class="prod-img">🧇</div>
+              <div class="prod-name">جبن Okids بالشريط</div>
+              <div class="prod-weight">بار 200غ</div>
+              <div class="prod-price-row">
+                <div class="prod-price">280 دج</div>
+                <div class="qty-ctrl">
+                  <button class="qty-btn minus">−</button>
+                  <span class="qty-num">0</span>
+                  <button class="qty-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="prod-card">
+              <div class="prod-img">🥛</div>
+              <div class="prod-name">حليب بودرة أطفال</div>
+              <div class="prod-weight">كيس 25 كغ</div>
+              <div class="prod-price-row">
+                <div class="prod-price">1850 دج</div>
+                <div class="qty-ctrl">
+                  <button class="qty-btn minus">−</button>
+                  <span class="qty-num">1</span>
+                  <button class="qty-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="prod-card">
+              <div class="prod-img">🍼</div>
+              <div class="prod-name">حليب UHT Okids</div>
+              <div class="prod-weight">كرتون 12 × 1L</div>
+              <div class="prod-price-row">
+                <div class="prod-price">450 دج</div>
+                <div class="qty-ctrl">
+                  <button class="qty-btn minus">−</button>
+                  <span class="qty-num">0</span>
+                  <button class="qty-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="prod-card">
+              <div class="prod-img">🧈</div>
+              <div class="prod-name">زبدة Okids</div>
+              <div class="prod-weight">كرتون 20 × 250غ</div>
+              <div class="prod-price-row">
+                <div class="prod-price">560 دج</div>
+                <div class="qty-ctrl">
+                  <button class="qty-btn minus">−</button>
+                  <span class="qty-num">0</span>
+                  <button class="qty-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="prod-card">
+              <span class="prod-badge" style="background:#FFF0F5;color:var(--red);border-color:#FFB0C0;">عرض</span>
+              <div class="prod-img">🎁</div>
+              <div class="prod-name">حزمة رمضان Mixed</div>
+              <div class="prod-weight">مجموعة متنوعة</div>
+              <div class="prod-price-row">
+                <div class="prod-price">2400 دج</div>
+                <div class="qty-ctrl">
+                  <button class="qty-btn minus">−</button>
+                  <span class="qty-num">0</span>
+                  <button class="qty-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /grid -->
+
+          <!-- Add to cart floating bar -->
+          <div style="margin:4px 14px 8px;background:var(--blue-dark);border-radius:20px;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;color:white;box-shadow:0 6px 20px rgba(13,59,140,0.3);">
+            <span style="font-size:13px;font-weight:700;">3 منتجات محددة</span>
+            <button style="background:var(--red);color:white;border:none;border-radius:15px;padding:8px 18px;font-size:13px;font-weight:800;cursor:pointer;">إضافة للسلة 🛒</button>
+          </div>
+
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+          <div class="bn-item"><span class="bn-icon">🏠</span><span>الرئيسية</span></div>
+          <div class="bn-item active"><span class="bn-icon">📦</span><span>المنتجات</span><div class="bn-dot"></div></div>
+          <div class="bn-item"><span class="bn-icon">🛒</span><span>السلة</span></div>
+          <div class="bn-item"><span class="bn-icon">📋</span><span>طلباتي</span></div>
+          <div class="bn-item"><span class="bn-icon">👤</span><span>حسابي</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label-bottom">📱 الشاشة 2 — المنتجات</div>
+  </div>
+
+  <!-- ============================
+       PHONE 3 — السلة
+  ============================= -->
+  <div>
+    <div class="phone-wrapper">
+      <div class="phone">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋 98%</span>
+        </div>
+
+        <div class="page-header">
+          <button class="back-btn">‹</button>
+          <span class="page-title">🛒 سلة الطلب</span>
+          <span style="background:rgba(255,255,255,0.2);color:white;border-radius:15px;padding:3px 10px;font-size:11px;font-weight:700;margin-right:auto;">3 منتجات</span>
+        </div>
+
+        <div class="screen">
+          <div class="cart-list">
+
+            <div class="cart-item">
+              <div class="cart-img">🧀</div>
+              <div class="cart-info">
+                <div class="cart-name">جبن Okids بالحصص</div>
+                <div class="cart-weight">24 قطعة × 8غ</div>
+                <div class="cart-price">640 دج</div>
+              </div>
+              <div class="cart-qty-ctrl">
+                <button class="cart-qty-btn plus">+</button>
+                <span class="cart-qty-num">2</span>
+                <button class="cart-qty-btn">−</button>
+              </div>
+              <button class="delete-btn">🗑</button>
+            </div>
+
+            <div class="cart-item">
+              <div class="cart-img">🥛</div>
+              <div class="cart-info">
+                <div class="cart-name">حليب بودرة أطفال</div>
+                <div class="cart-weight">كيس 25 كغ</div>
+                <div class="cart-price">1850 دج</div>
+              </div>
+              <div class="cart-qty-ctrl">
+                <button class="cart-qty-btn plus">+</button>
+                <span class="cart-qty-num">1</span>
+                <button class="cart-qty-btn">−</button>
+              </div>
+              <button class="delete-btn">🗑</button>
+            </div>
+
+            <div class="cart-item">
+              <div class="cart-img">🍼</div>
+              <div class="cart-info">
+                <div class="cart-name">حليب UHT Okids</div>
+                <div class="cart-weight">كرتون 12 × 1L</div>
+                <div class="cart-price">900 دج</div>
+              </div>
+              <div class="cart-qty-ctrl">
+                <button class="cart-qty-btn plus">+</button>
+                <span class="cart-qty-num">2</span>
+                <button class="cart-qty-btn">−</button>
+              </div>
+              <button class="delete-btn">🗑</button>
+            </div>
+
+            <!-- Add note -->
+            <div style="background:white;border-radius:12px;padding:12px 14px;box-shadow:0 3px 10px rgba(0,0,0,0.06);">
+              <div style="font-size:12px;font-weight:700;color:var(--blue-dark);margin-bottom:6px;">📝 ملاحظة للتوصيل</div>
+              <textarea style="width:100%;border:1.5px solid #D0DCF0;border-radius:8px;padding:8px;font-size:12px;resize:none;outline:none;color:var(--gray-text);font-family:inherit;direction:rtl;" rows="2" placeholder="أضف ملاحظة... (مثلاً: التوصيل قبل الظهر)"></textarea>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="cart-summary">
+            <div class="summary-row"><span>المجموع الفرعي</span><span>3390 دج</span></div>
+            <div class="summary-row"><span>التوصيل</span><span style="color:#28C76F;font-weight:700;">مجاني 🎉</span></div>
+            <div class="summary-row"><span>الخصم (10%)</span><span style="color:var(--red);">−339 دج</span></div>
+            <div class="summary-row total"><span>الإجمالي</span><span>3051 دج</span></div>
+          </div>
+
+          <button class="send-order-btn">📤 إرسال الطلب</button>
+          <div style="height:10px;"></div>
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+          <div class="bn-item"><span class="bn-icon">🏠</span><span>الرئيسية</span></div>
+          <div class="bn-item"><span class="bn-icon">📦</span><span>المنتجات</span></div>
+          <div class="bn-item active"><span class="bn-icon">🛒</span><span>السلة</span><div class="bn-dot"></div></div>
+          <div class="bn-item"><span class="bn-icon">📋</span><span>طلباتي</span></div>
+          <div class="bn-item"><span class="bn-icon">👤</span><span>حسابي</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label-bottom">📱 الشاشة 3 — السلة</div>
+  </div>
+
+  <!-- ============================
+       PHONE 4 — تأكيد الطلب
+  ============================= -->
+  <div>
+    <div class="phone-wrapper">
+      <div class="phone">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋 98%</span>
+        </div>
+
+        <div class="page-header" style="justify-content:center;text-align:center;">
+          <span class="page-title" style="text-align:center;">تأكيد الطلب</span>
+        </div>
+
+        <div class="confirm-screen">
+          <div class="confirm-circle">✓</div>
+
+          <div class="confirm-title">تم إرسال الطلب بنجاح! 🎉</div>
+          <div class="confirm-sub">
+            شكراً لثقتك في <strong>Okids</strong>. سيتصل بك فريقنا لتأكيد الطلب وتحديد موعد التسليم.
+          </div>
+
+          <div class="order-num-box">
+            <div class="order-num-label">رقم الطلب</div>
+            <div class="order-num">#OKD-2025-0847</div>
+          </div>
+
+          <div class="confirm-details">
+            <div style="font-size:13px;font-weight:800;color:var(--blue-dark);margin-bottom:4px;">تفاصيل الطلب</div>
+            <div class="detail-row">
+              <span class="detail-label">📅 التاريخ</span>
+              <span class="detail-value">04 مايو 2025</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">⏰ الوقت</span>
+              <span class="detail-value">09:41 ص</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">📦 عدد المنتجات</span>
+              <span class="detail-value">3 منتجات</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">💰 الإجمالي</span>
+              <span class="detail-value" style="color:var(--red);">3051 دج</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">🚚 حالة الطلب</span>
+              <span class="detail-value green">✔ قيد المعالجة</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">📍 التوصيل</span>
+              <span class="detail-value">خلال 24-48 ساعة</span>
+            </div>
+          </div>
+
+          <button class="track-btn">📍 تتبع الطلب</button>
+          <button class="new-order-btn">➕ طلب جديد</button>
+
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gray-text);">
+            <span>للاستفسار:</span>
+            <span style="color:var(--blue-dark);font-weight:700;">025 43 80 22</span>
+          </div>
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+          <div class="bn-item"><span class="bn-icon">🏠</span><span>الرئيسية</span></div>
+          <div class="bn-item"><span class="bn-icon">📦</span><span>المنتجات</span></div>
+          <div class="bn-item"><span class="bn-icon">🛒</span><span>السلة</span></div>
+          <div class="bn-item active"><span class="bn-icon">📋</span><span>طلباتي</span><div class="bn-dot"></div></div>
+          <div class="bn-item"><span class="bn-icon">👤</span><span>حسابي</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label-bottom">📱 الشاشة 4 — تأكيد الطلب</div>
+  </div>
+
+</div><!-- /screens-wrapper -->
+
+</body>
+      </html>
